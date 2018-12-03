@@ -1,28 +1,92 @@
 {
-  "name": "react-native-vimeo",
-  "version": "0.3.0",
+  "_args": [
+    [
+      {
+        "raw": "react-native-vimeo@git+https://github.com/vhoen/react-native-vimeo.git#master",
+        "scope": null,
+        "escapedName": "react-native-vimeo",
+        "name": "react-native-vimeo",
+        "rawSpec": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+        "spec": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:vhoen/react-native-vimeo.git#master",
+          "sshUrl": "git+ssh://git@github.com/vhoen/react-native-vimeo.git#master",
+          "httpsUrl": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+          "gitUrl": "git://github.com/vhoen/react-native-vimeo.git#master",
+          "shortcut": "github:vhoen/react-native-vimeo#master",
+          "directUrl": "https://raw.githubusercontent.com/vhoen/react-native-vimeo/master/package.json"
+        }
+      },
+      "/Users/vhoen/Sources/planetvn-react"
+    ]
+  ],
+  "_from": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+  "_id": "react-native-vimeo@0.3.0",
+  "_inCache": true,
+  "_location": "/react-native-vimeo",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-vimeo@git+https://github.com/vhoen/react-native-vimeo.git#master",
+    "scope": null,
+    "escapedName": "react-native-vimeo",
+    "name": "react-native-vimeo",
+    "rawSpec": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+    "spec": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+    "type": "hosted",
+    "hosted": {
+      "type": "github",
+      "ssh": "git@github.com:vhoen/react-native-vimeo.git#master",
+      "sshUrl": "git+ssh://git@github.com/vhoen/react-native-vimeo.git#master",
+      "httpsUrl": "git+https://github.com/vhoen/react-native-vimeo.git#master",
+      "gitUrl": "git://github.com/vhoen/react-native-vimeo.git#master",
+      "shortcut": "github:vhoen/react-native-vimeo#master",
+      "directUrl": "https://raw.githubusercontent.com/vhoen/react-native-vimeo/master/package.json"
+    }
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/vhoen/react-native-vimeo.git#fa19ad5c9d2637b6e847ae1b7719c917534f08e1",
+  "_shasum": "c5bed595bed921f7fd58745d7f7a841970b04271",
+  "_shrinkwrap": null,
+  "_spec": "react-native-vimeo@git+https://github.com/vhoen/react-native-vimeo.git#master",
+  "_where": "/Users/vhoen/Sources/planetvn-react",
+  "author": {
+    "name": "Alex McLeod"
+  },
+  "bugs": {
+    "url": "https://github.com/Myagi/react-native-vimeo/issues"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10"
+  },
   "description": "A <Vimeo/> component for React Native.",
-  "main": "Vimeo.ios.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Myagi/react-native-vimeo.git"
-  },
+  "devDependencies": {},
+  "gitHead": "fa19ad5c9d2637b6e847ae1b7719c917534f08e1",
+  "homepage": "https://github.com/Myagi/react-native-vimeo#readme",
   "keywords": [
     "alex-mcleod",
     "Myagi",
     "react",
     "react-native"
   ],
-  "author": "Alex McLeod",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Myagi/react-native-vimeo/issues"
+  "main": "Vimeo.ios.js",
+  "name": "react-native-vimeo",
+  "optionalDependencies": {},
+  "peerDependencies": {
+    "react-native-webview-bridge": "^0.20.3"
   },
-  "homepage": "https://github.com/Myagi/react-native-vimeo#readme",
-  "dependencies": {
-    "prop-types": "^15.5.10"
-  }
+  "readme": "# React Native Vimeo Player\n\nIt is easy enough to embed Vimeo videos in your React Native app using a standard\nReact Native Webview, however it is impossible to access the Vimeo player API that way.\nThis component allows you to easily embed a Vimeo video in your app and have full access to\nthe Vimeo player JS API (documented at https://developer.vimeo.com/player/js-api).\n\n## Installation\n\n1. Go through the instructions for installing the\n`React Native Webview Bridge` component, found here: https://github.com/alinz/react-native-webview-bridge.\n\n2. Run `npm install react-native-vimeo` within your project.\n\n3. Compile and build to make sure everything is set up properly.\n\n## Usage\n\n```\n  <Vimeo\n    ref='video'\n    videoId='2619976' // Vimeo video ID\n    onReady={ () => console.log('Video is ready') }\n    onPlay={ () => console.log('Video is playing') }\n    onPlayProgress={ data => console.log('Video progress data:', data) }\n    onFinish={ () => console.log('Video is finished') }\n  />\n```\n\n`this.refs.video.api('getDuration', dur => console.log('Video duration is:', dur))`\n\nNOTE: Any `api` method calls must be made after `onReady` has been called.\n\n## How it works\n\nInternally, a webview loads a HTML page which is hosted via Github Pages. This HTML page loads your\nVimeo video in an iFrame, then uses the Froogaloop JS library provided by Vimeo to pass event\ninformation through the webview bridge to your application. Vimeo API calls are made by sending a\nmessage to the HTML page via the webview bridge.\n\nIdeally, the HTML page content would just be passed as a string into the webview, however if that\nwere the case then the Vimeo JS API would not function. As stated in the Vimeo JS API\ndocumentation, the Froogaloop library can only interact with the Vimeo iFrame when the page is\nserved up by a web server, not when it is loaded locally.\n\nIf you would like to view the contents of the HTML page used, simply clone this repo\nand checkout the `gh-pages` branch (more info here\nhttps://help.github.com/articles/creating-project-pages-manually/). Alternatively, just visit\nhttp://myagi.github.io/react-native-vimeo/ and view the source.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Myagi/react-native-vimeo.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.3.0"
 }

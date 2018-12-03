@@ -3,34 +3,20 @@
  * @flow
  */
 import React from 'react';
+import {
+  StyleSheet
+} from 'react-native';
 import PropTypes from 'prop-types';
-import { StyleSheet, WebView } from 'react-native';
+import WebViewBridge from 'react-native-webview-bridge';
+
 
 function getVimeoPageURL(videoId) {
-  return (
-    'https://myagi.github.io/react-native-vimeo/v0.3.0.html?vid=' + videoId
-  );
+  return 'https://myagi.github.io/react-native-vimeo/v0.3.0.html?vid=' + videoId;
 }
 
-// NOTE: Injecting code here due to react-native webview issues when overriding
-// the onMessage method. See here: https://github.com/facebook/react-native/issues/10865
-export const injectedCode = `
-(function() {
-var originalPostMessage = window.postMessage;
-
-var patchedPostMessage = function(message, targetOrigin, transfer) {
-  originalPostMessage(message, targetOrigin, transfer);
-};
-
-patchedPostMessage.toString = function() {
-  return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
-};
-
-window.postMessage = patchedPostMessage;
-})();
-`;
 
 export default class Vimeo extends React.Component {
+
   static propTypes = {
     videoId: PropTypes.string.isRequired,
     onReady: PropTypes.func,
@@ -39,7 +25,7 @@ export default class Vimeo extends React.Component {
     onPause: PropTypes.func,
     onFinish: PropTypes.func,
     scalesPageToFit: PropTypes.bool
-  };
+  }
 
   constructor() {
     super();
@@ -57,29 +43,27 @@ export default class Vimeo extends React.Component {
     this.registerHandlers();
   }
 
-  api = (method, cb) => {
+  api(method, cb) {
     if (!this.state.ready) {
-      throw new Error(
-        'You cannot use the `api` method until `onReady` has been called'
-      );
+      throw new Error('You cannot use the `api` method until `onReady` has been called');
     }
+    this.refs.webviewBridge.sendToBridge(method);
     this.registerBridgeEventHandler(method, cb);
-  };
+  }
 
-  registerHandlers = () => {
+  registerHandlers() {
     this.registerBridgeEventHandler('ready', this.onReady);
     this.registerBridgeEventHandler('play', this.props.onPlay);
     this.registerBridgeEventHandler('playProgress', this.props.onPlayProgress);
     this.registerBridgeEventHandler('pause', this.props.onPause);
     this.registerBridgeEventHandler('finish', this.props.onFinish);
-  };
+  }
 
-  registerBridgeEventHandler = (eventName, handler) => {
+  registerBridgeEventHandler(eventName, handler) {
     this.handlers[eventName] = handler;
-  };
+  }
 
-  onBridgeMessage = event => {
-    const message = event.nativeEvent.data;
+  onBridgeMessage = (message) => {
     let payload;
     try {
       payload = JSON.parse(message);
@@ -88,7 +72,7 @@ export default class Vimeo extends React.Component {
     }
     let handler = this.handlers[payload.name];
     if (handler) handler(payload.data);
-  };
+  }
 
   onReady = () => {
     this.setState({ ready: true });
@@ -96,11 +80,11 @@ export default class Vimeo extends React.Component {
     // that `this.state.ready` will be updated to
     // `true` by the time it is called.
     if (this.props.onReady) setTimeout(this.props.onReady);
-  };
+  }
 
   render() {
     return (
-      <WebView
+      <WebViewBridge
         ref="webviewBridge"
         style={{
           // Accounts for player border
@@ -108,13 +92,13 @@ export default class Vimeo extends React.Component {
           marginLeft: -10,
           height: this.props.height
         }}
-        injectedJavaScript={injectedCode}
         source={{ uri: getVimeoPageURL(this.props.videoId) }}
         scalesPageToFit={this.props.scalesPageToFit}
         scrollEnabled={false}
-        onMessage={this.onBridgeMessage}
-        onError={error => console.error(error)}
+        onBridgeMessage={this.onBridgeMessage}
+        onError={(error) => console.error(error)}
       />
     );
   }
+
 }
